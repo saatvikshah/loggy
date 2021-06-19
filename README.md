@@ -2,6 +2,10 @@
 
 Merge and manipulate log files like theres no tomorrow
 
+## MVP Features
+- Merge timestamped log files - [sample use case](https://stackoverflow.com/questions/15866772/merging-multiple-log-files-by-date-including-multilines)
+- Apply time range queries - [sample use case](https://stackoverflow.com/q/7575267/3656081)
+
 ## Build
 
 ```
