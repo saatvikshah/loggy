@@ -1,6 +1,7 @@
 module Main where
 
 import Options.Applicative
+import LoggyCore (mergeLogLines)
 
 data LoggyArgs = LoggyArgs
   { fstFile      :: String
@@ -32,5 +33,8 @@ main = runMain =<< execParser opts
      <> header "This is the text from header" )
 
 runMain :: LoggyArgs -> IO ()
-runMain (LoggyArgs txt1 txt2 dfmt) = print [txt1,txt2,dfmt]
-
+runMain (LoggyArgs txt1 txt2 dfmt) = do
+    file1Lines <- lines <$> readFile txt1
+    file2Lines <- lines <$> readFile txt2
+    let mergedLines = mergeLogLines dfmt file1Lines file2Lines
+    putStrLn $ unlines mergedLines
