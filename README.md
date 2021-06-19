@@ -3,6 +3,7 @@
 Merge and manipulate log files like theres no tomorrow
 
 ## MVP Features
+
 - Merge timestamped log files - [sample use case](https://stackoverflow.com/questions/15866772/merging-multiple-log-files-by-date-including-multilines)
 - Apply time range queries - [sample use case](https://stackoverflow.com/q/7575267/3656081)
 
@@ -20,7 +21,7 @@ cabal run loggy -- --text1 file1.txt --text2 file2.txt --format "%H:%M:%S"
   - [ ] Merging multiple log files
     - [ ] With same format
     - [ ] With different formats
-  - [ ] Add unit tests(HUnit)
+  - [x] Add unit tests(HUnit)
   - [ ] Adding quickcheck testing (minor + time consuming)
   - [ ] Add Github CI (optional)
 - [ ] Checkpoint 3: Performance
