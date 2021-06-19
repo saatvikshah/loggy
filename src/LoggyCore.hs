@@ -1,13 +1,23 @@
 module LoggyCore where
 
 import Data.Time
+import GHC.Exts (sortWith)
 
+type LogLine = String
 type DateFormat = String
 
-extract_timestamp :: DateFormat -> String -> Maybe UTCTime
-extract_timestamp dformat line = parsed_ts
+extractTimestamp :: DateFormat -> LogLine -> UTCTime
+extractTimestamp dformat line = parsedTs
     where
-        parsed_ts = case time_parser line of
-            [(ts, _)] -> Just ts
-            _ -> Nothing
-        time_parser = readSTime True defaultTimeLocale dformat
+        parsedTs = case timeParser line of
+            [(ts, _)] -> ts
+            _ -> error "Invalid log line!"
+        timeParser = readSTime True defaultTimeLocale dformat  
+
+mergeLogLines :: DateFormat -> [LogLine] -> [LogLine] -> [LogLine]
+mergeLogLines dformat l1 l2 = sortedLogLines
+    where
+        sortedLogLines = snd <$> sortedLogTuples
+        sortedLogTuples = sortWith fst $ zip logTimestamps l3
+        logTimestamps = extractTimestamp dformat <$> l3
+        l3 = l1 ++ l2
