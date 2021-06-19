@@ -33,3 +33,15 @@ executable loggy
   main-is:        LoggyMain.hs
   build-depends: optparse-applicative >= 0.16.0.0,
                  loggy
+
+test-suite loggy-test
+  import: common-options
+  type:   exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: Spec.hs
+  other-modules: Test.LoggyCore
+  build-depends:       loggy
+                     , hspec ^>= 2.7.4
+  ghc-options:         -threaded
+                       -rtsopts
+                       -with-rtsopts=-N  
