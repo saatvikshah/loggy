@@ -6,6 +6,7 @@ import LoggyCore (mergeLogLines)
 data LoggyArgs = LoggyArgs
   { fstFile      :: String
   , sndFile      :: String
+  , thdFile      :: String
   , dateFormat   :: String}
 
 parseLoggyArgs :: Parser LoggyArgs
@@ -18,6 +19,10 @@ parseLoggyArgs = LoggyArgs
           ( long "text2"
          <> metavar "TEXT_2"
          <> help "Text to merge." )
+      <*> strOption
+          ( long "text3"
+         <> metavar "TEXT_3"
+         <> help "Text to merge." )         
       <*> strOption
           ( long "format"
          <> metavar "FORMAT"
@@ -33,8 +38,7 @@ main = runMain =<< execParser opts
      <> header "This is the text from header" )
 
 runMain :: LoggyArgs -> IO ()
-runMain (LoggyArgs txt1 txt2 dfmt) = do
-    file1Lines <- lines <$> readFile txt1
-    file2Lines <- lines <$> readFile txt2
-    let mergedLines = mergeLogLines dfmt file1Lines file2Lines
+runMain (LoggyArgs txt1 txt2 txt3 dfmt) = do
+    linesPerFile <- (fmap.fmap) lines (mapM readFile [txt1, txt2, txt3])
+    let mergedLines = mergeLogLines dfmt linesPerFile
     putStrLn $ unlines mergedLines

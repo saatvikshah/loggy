@@ -26,14 +26,18 @@ loggycore = describe "LoggyCoreTest" $ do
         it "simpleTimestampWithRepeatedTimestamp" $ utctDayTime (extractTimestamp dateFormat $ inputTimeWith (" " ++ inputTime)) `shouldBe` inputDiffTime
         -- TODO: How to test erroneous input case?
     describe "LoggyCore: mergeLogLines" $ do
-        it "bothEmpty" $ mergeLogLines dateFormat [] [] `shouldBe` []
-        it "singleEmpty" $ mergeLogLines dateFormat [inputTimeWith " sample log line"] [] `shouldBe` [inputTimeWith " sample log line"]
-        it "sameTimeLogs" $ mergeLogLines dateFormat [inputTimeWith " sample log line 1"] [inputTimeWith " sample log line 2"] 
+        it "bothEmpty" $ mergeLogLines dateFormat [[],[]] `shouldBe` []
+        it "singleEmpty" $ mergeLogLines dateFormat [[inputTimeWith " sample log line"],[]] `shouldBe` [inputTimeWith " sample log line"]
+        it "sameTimeLogs" $ mergeLogLines dateFormat [[inputTimeWith " sample log line 1"],[inputTimeWith " sample log line 2"]] 
             `shouldBe` [inputTimeWith " sample log line 1", inputTimeWith " sample log line 2"]
-        it "mergeDifferentTimeSingleLineLogs" $ mergeLogLines dateFormat [inputTimeWith " from file 1"] ["01:18:00 from file 2"]
+        it "mergeSingleLineLogs" $ mergeLogLines dateFormat [[inputTimeWith " from file 1"],["01:18:00 from file 2"]]
             `shouldBe` [inputTimeWith " from file 1", "01:18:00 from file 2"]
-        it "mergeDifferentTimeMultiLineLogs" $ mergeLogLines dateFormat [inputTimeWith " from file 1", "01:23:00 from file 1"]
-                ["01:18:00 from file 2", "01:25:55 from file 2"]
-                    `shouldBe` [inputTimeWith " from file 1", "01:18:00 from file 2", "01:23:00 from file 1", "01:25:55 from file 2"]            
+        it "mergeMultiLineLogs" $ mergeLogLines dateFormat [[inputTimeWith " from file 1", "01:23:00 from file 1"],
+                ["01:18:00 from file 2", "01:25:55 from file 2"]]
+            `shouldBe` [inputTimeWith " from file 1", "01:18:00 from file 2", "01:23:00 from file 1", "01:25:55 from file 2"]  
+        it "mergeSingleLineLogsDifferentTimeFormats" $ 
+                mergeLogLines' [(dateFormat, [inputTimeWith " from file 1", "01:23:00 from file 1"]),
+                                (dateFormat ++ "XYZ", ["01:18:00XYZ from file 2"])]
+            `shouldBe` [inputTimeWith " from file 1", "01:18:00XYZ from file 2", "01:23:00 from file 1"]
 
 
