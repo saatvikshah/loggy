@@ -36,16 +36,15 @@ Available options:
     - [x] With same format
     - [x] With different formats
   - [x] Add unit tests(HUnit)
-  - [ ] Remove "error" on parse issues, replace with "Maybe"
-  - [ ] Look into doctest to clean up unit tests
+  - [x] Remove "error" on parse issues, replace with "Maybe"
   - [ ] Add -Weverything flag
+  - [ ] `fileembed` with actual data + setup of regression tests
   - [ ] Add Github CI (optional)
 - [ ] Checkpoint 3: Performance
   - [ ] Use Vector/Text
   - [ ] Use heap for low memory consumption/Use streaming library
   - [ ] Benchmarks(optional)
 - [ ] Checkpoint 4: Stretch goals
-  - [ ] `fileembed` with actual data + setup of regression tests
   - [ ] Adding quickcheck testing(how to model strftime/log file inputs)
   - [ ] Pull in remote files
   - [ ] Terminal coloring
@@ -54,3 +53,4 @@ Available options:
   - [ ] Print output in a range of timestamps
   - [ ] Group lines without timestamps
   - [ ] Reading log files in parallel
+  - [ ] Look into doctest to clean up unit tests
