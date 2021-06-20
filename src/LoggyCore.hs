@@ -13,17 +13,10 @@ extractTimestamp dformat line = parsedTs
         parsedTs = case timeParser line of
             [(ts, _)] -> ts
             _ -> error "Invalid log line!"
-        timeParser = readSTime True defaultTimeLocale dformat  
+        timeParser = readSTime True defaultTimeLocale dformat
 
-mergeLogLines :: DateFormat -> [LogFileLines] -> [LogLine]
-mergeLogLines dformat lfiles = mergeLogLines' dFormatFilePairs
-    where
-        dFormatFilePairs = zip dFormatPerFile lfiles
-        dFormatPerFile = replicate numFiles dformat
-        numFiles = length lfiles
-
-mergeLogLines' :: [(DateFormat, LogFileLines)] -> [LogLine]
-mergeLogLines' dfmtFilePairs = sortedLogLines
+mergeLogLines :: [(DateFormat, LogFileLines)] -> [LogLine]
+mergeLogLines dfmtFilePairs = sortedLogLines
     where
         sortedLogLines = snd <$> sortedLogTuples
         sortedLogTuples = sortWith fst $ zip logTimestamps logLines
