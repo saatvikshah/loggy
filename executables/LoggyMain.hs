@@ -1,7 +1,10 @@
 module Main where
 
 import Options.Applicative
-import LoggyCore (mergeLogLines, DateFormat)
+import LoggyCore (mergeLogLines, DateFormat, MergeResult(MkMergeResult), WarnCode(InvalidLogLine))
+import Control.Monad (when)
+import System.IO (hPutStrLn, stderr)
+
 
 type FileName = String
 type InputArg = String
@@ -48,7 +51,8 @@ runMain :: [LoggyArg] -> IO ()
 runMain loggyArgs = do
   linesPerFile <- (fmap.fmap) lines (mapM readFile fileNames)
   let dFmtFileLinesPairs = zip dateFormats linesPerFile
-  let mergedLines = mergeLogLines dFmtFileLinesPairs
+  let MkMergeResult mergedLines warnCode = mergeLogLines dFmtFileLinesPairs
+  when (warnCode == InvalidLogLine) $ hPutStrLn stderr "[warn] Invalid log line(s) in input, ignoring."
   putStrLn $ unlines mergedLines
     where
       fileNames = argFilename <$> loggyArgs
