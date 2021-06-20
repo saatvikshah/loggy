@@ -1,44 +1,55 @@
 module Main where
 
 import Options.Applicative
-import LoggyCore (mergeLogLines)
+import LoggyCore (mergeLogLines, DateFormat)
 
-data LoggyArgs = LoggyArgs
-  { fstFile      :: String
-  , sndFile      :: String
-  , thdFile      :: String
-  , dateFormat   :: String}
+type FileName = String
+type InputArg = String
 
-parseLoggyArgs :: Parser LoggyArgs
-parseLoggyArgs = LoggyArgs
-      <$> strOption
-          ( long "text1"
-         <> metavar "TEXT_1"
-         <> help "Text to merge." )
-      <*> strOption
-          ( long "text2"
-         <> metavar "TEXT_2"
-         <> help "Text to merge." )
-      <*> strOption
-          ( long "text3"
-         <> metavar "TEXT_3"
-         <> help "Text to merge." )         
-      <*> strOption
-          ( long "format"
-         <> metavar "FORMAT"
-         <> value "%Y:%M:%D-%H%m%s"
-         <> help "Date format to be parsed." )  
+data LoggyArg = LoggyArg
+  { argFilename      :: FileName
+  , argDateFormat    :: DateFormat
+  } deriving Show
+
+parseInputArgs :: Parser [InputArg]
+parseInputArgs = some parseInputArg
+  where
+    parseInputArg:: Parser InputArg
+    parseInputArg = strOption
+        (short 'i'
+        <> metavar "FILE(with optional @DATE_FORMAT)"
+        <> help "Name of the file and its optional date format separated by @. Repeatable arg.")
+
+parseCommonDateFormatArg :: Parser DateFormat
+parseCommonDateFormatArg = strOption
+      (long "format"
+      <> metavar "DATE_FORMAT"
+      <> help "common date format")
+
+parseLoggyArgs :: Parser [LoggyArg]
+parseLoggyArgs = map.makeLoggyArg <$> parseCommonDateFormatArg <*> parseInputArgs
+  where fileName   = takeWhile (/='@')
+        dateFormat = tail . dropWhile (/='@')
+        makeLoggyArg :: DateFormat -> InputArg -> LoggyArg
+        makeLoggyArg fmt inpt = if '@'`elem`inpt then
+                                 LoggyArg (fileName inpt) (dateFormat inpt)
+                                else
+                                 LoggyArg inpt fmt  
 
 main :: IO ()
 main = runMain =<< execParser opts
   where
     opts = info (helper <*> parseLoggyArgs)
       ( fullDesc
-     <> progDesc "This is the text from progDesc"
-     <> header "This is the text from header" )
+     <> progDesc "Merge and manipulate log files."
+     <> header "loggy" )
 
-runMain :: LoggyArgs -> IO ()
-runMain (LoggyArgs txt1 txt2 txt3 dfmt) = do
-    linesPerFile <- (fmap.fmap) lines (mapM readFile [txt1, txt2, txt3])
-    let mergedLines = mergeLogLines dfmt linesPerFile
-    putStrLn $ unlines mergedLines
+runMain :: [LoggyArg] -> IO ()
+runMain loggyArgs = do
+  linesPerFile <- (fmap.fmap) lines (mapM readFile fileNames)
+  let dFmtFileLinesPairs = zip dateFormats linesPerFile
+  let mergedLines = mergeLogLines dFmtFileLinesPairs
+  putStrLn $ unlines mergedLines
+    where
+      fileNames = argFilename <$> loggyArgs
+      dateFormats = argDateFormat <$> loggyArgs

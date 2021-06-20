@@ -11,13 +11,27 @@ Merge and manipulate log files like theres no tomorrow
 
 ```
 cabal build
-cabal run loggy -- --text1 file1.txt --text2 file2.txt --format "%H:%M:%S"
+cabal run loggy -- -i file1.txt -i file2.txt@"%H:%M:%S" -i file3.txt --format "%H-%M-%S"
+```
+
+## Tool Description
+
+```
+Usage: loggy --format DATE_FORMAT (-i FILE(with optional @DATE_FORMAT))
+  Merge and manipulate log files.
+
+Available options:
+  -h,--help                Show this help text
+  --format DATE_FORMAT     common date format
+  -i FILE(with optional @DATE_FORMAT)
+                           Name of the file and its optional date format
+                           separated by @. Repeatable arg.
 ```
 
 ## Rough Checkpoints
 
 - [ ] Checkpoint 2: Improvements and Verification
-  - [ ] optparse improvements (figure out good command line syntax)
+  - [x] optparse improvements (figure out good command line syntax)
   - [x] Merging multiple log files
     - [x] With same format
     - [x] With different formats
