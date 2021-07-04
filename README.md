@@ -37,7 +37,8 @@ Available options:
     - [x] With different formats
   - [x] Add unit tests(HUnit)
   - [x] Remove "error" on parse issues, replace with "Maybe"
-  - [ ] Add -Weverything flag
+  - [x] Adding quickcheck testing(how to model strftime/log file inputs)
+  - [x] Add -Werror flag
   - [ ] `fileembed` with actual data + setup of regression tests
   - [ ] Add Github CI (optional)
 - [ ] Checkpoint 3: Performance
@@ -45,7 +46,6 @@ Available options:
   - [ ] Use heap for low memory consumption/Use streaming library
   - [ ] Benchmarks(optional)
 - [ ] Checkpoint 4: Stretch goals
-  - [ ] Adding quickcheck testing(how to model strftime/log file inputs)
   - [ ] Pull in remote files
   - [ ] Terminal coloring
     - [ ] Filename prefixing in output
